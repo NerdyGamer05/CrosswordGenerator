@@ -13,7 +13,6 @@ const down = document.getElementById('down');
 
 let positions = [];
 let labelCoords = {};
-let startingPoints = {};
 let groups = [];
 let gridSpaces = [];
 let puzzleLabels = [];
@@ -402,12 +401,11 @@ const generatePuzzle = function(pairs, definitions) {
   across.innerHTML = `<span class="fw-bolder fs-2">Across:</span><p class="fs-4">${horizontal}</p>`;
   down.innerHTML = `<span class="fw-bolder fs-2">Down:</span><p class="fs-4">${vertical}</p>`;
 
-  return parseCoordinates(letters, puzzleNumbers, coords, startingCoords, size, spacing, { minX: minX, maxY: maxY, minY: minY });
+  return parseCoordinates(letters, puzzleNumbers, coords, size, spacing, { minX: minX, maxY: maxY, minY: minY });
 }
 
-const parseCoordinates = function(coords, labelCoords, wordCoords, startingPoints, size, spacing, bounds) {
+const parseCoordinates = function(coords, labelCoords, wordCoords, size, spacing, bounds) {
   labelCoords = Object.entries(labelCoords);
-  startingPoints = Object.entries(startingPoints);
   const positions = Object.entries(coords).map(elm => [elm[0].split(',').map(Number), elm[1]]).map(elm => {
     return [
       [
@@ -418,19 +416,11 @@ const parseCoordinates = function(coords, labelCoords, wordCoords, startingPoint
     ]
   });
 
-  let startDirections = {};
-  for (const elm of startingPoints) {
-    startDirections[elm[0]] = elm[1][1];
-  }
-
   const tmp = {};
-  const wordStartingPoints = {};
   const labelWords = {};
   for (const [n,word] of labelCoords) {
     labelWords[word] = n;
     const pos = wordCoords[word][0].map(n => Math.floor(n / (size + spacing))).join(',');
-    if (pos in wordStartingPoints) wordStartingPoints[pos].push(word);
-    else wordStartingPoints[pos] = [word];
     if (!(pos in tmp)) tmp[pos] = [+n];
     else if (tmp[pos][0] % 2 === 0) tmp[pos].push(+n);
     else tmp[pos].unshift(+n);
@@ -454,7 +444,7 @@ const parseCoordinates = function(coords, labelCoords, wordCoords, startingPoint
 
   min.x = Math.floor(bounds.minX / (size + spacing));
   min.y = Math.floor(bounds.minY / (size + spacing));
-  return [positions, tmp, wordCoords, wordStartingPoints, labelWords, wordAtCoords];
+  return [positions, tmp, wordCoords, labelWords, wordAtCoords];
 }
 
 generateBtn.addEventListener('click', () => {
@@ -480,7 +470,7 @@ generateBtn.addEventListener('click', () => {
       pairs[arr[0]] = res[0];
       joints[arr[0]] = [res[0][0], res[0][1][Math.floor(Math.random() * res[0][1].length)]];
     }
-    [positions, labelCoords, groups, startingPoints, labelWords, wordAtCoords] = generatePuzzle(connectIntersections(joints), definitions);
+    [positions, labelCoords, groups, labelWords, wordAtCoords] = generatePuzzle(connectIntersections(joints), definitions);
   }).catch(error => {
       throw error;
   }).finally(() => {
