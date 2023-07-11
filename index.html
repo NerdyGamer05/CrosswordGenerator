@@ -10,14 +10,14 @@
 </head>
 <body>
 
-    <div class="container" style="padding:0;margin:0;width:fit-content;">
+    <div class="container" style="padding:0;margin:0;width:100%;max-width:100%;">
         <div class="row">
-            <div class="puzzle-container col" style="background-color:white;">
+            <div class="puzzle-container col" style="background-color:white;width:fit-content;max-width:fit-content;">
                 <div class="grid" id="puzzle" style="background-color:black;width:fit-content;"></div>
             </div>
-            <div class="col" id="hints" style="display:flex;">
-                <p id="across"></p>
-                <p id="down"></p>
+            <div class="col" id="hints" style="display:flex;max-width:50%;">
+                <div id="across"></div>
+                <div id="down"></div>
             </div>
         </div>
     </div>

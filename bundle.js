@@ -12,10 +12,14 @@ const across = document.getElementById('across');
 const down = document.getElementById('down');
 
 let positions = [];
+let labelCoords = {};
 let startingPoints = {};
 let groups = [];
 let gridSpaces = [];
 let puzzleLabels = [];
+let words = [];
+let labelWords = {};
+let wordAtCoords = {};
 let letters = {};
 let userSolution = {};
 let solutionMode = false;
@@ -135,8 +139,6 @@ const generatePuzzle = function(pairs, definitions) {
   let index = 0;
   while (list.length <= n) {
     if (!(index in junctions)) {
-      console.log("junctions[index] is not defined");
-      console.log(junctions, index);
       break;
     }
     let word = junctions[index][0];
@@ -291,10 +293,7 @@ const generatePuzzle = function(pairs, definitions) {
   let orientation = Math.random() < 0.5 ? 'h' : 'v';
   for (let i = 0; i <= n; i++) {
     const word = list[i];
-    if (!(word in definitions)) {
-      console.log(`no definition for ${word}`);
-      continue;
-    }
+    if (!(word in definitions)) continue;
     if (i !== 0) [x,y] = list[i-1] in pairs ? coords[list[i-1]][pairs[list[i-1]][0]] : [-1,-1];
 
     if (list[i-1] in pairs && word === pairs[list[i-1]][2]) {
@@ -354,7 +353,7 @@ const generatePuzzle = function(pairs, definitions) {
       }
     }
 
-    const addNumber = function(pos, existingNum) {
+    const addNumber = function() {
       if (orientation === 'h') {
         puzzleNumbers[nums.across] = word;
         nums.across += 2;
@@ -396,12 +395,12 @@ const generatePuzzle = function(pairs, definitions) {
   let horizontal = "";
 
   for (const [n,word] of Object.entries(puzzleNumbers)) {
-    if (n % 2 === 0) vertical += `<b>${n}.</b> [<i>${definitions[word].speech}</i>] ${definitions[word].definition}<br>`;
-    else horizontal += `<b>${n}.</b> [<i>${definitions[word].speech}</i>] ${definitions[word].definition}<br>`;
+    if (n % 2 === 0) vertical += `<span id="${n}" class="words"><b>${n}.</b> [<i>${definitions[word].speech}</i>] ${definitions[word].definition}</span><br>`;
+    else horizontal += `<span id="${n}" class="words"><b>${n}.</b> [<i>${definitions[word].speech}</i>] ${definitions[word].definition}</span><br>`;
   }
 
-  across.innerHTML = `<span class="fs-4"><span class="fw-bolder fs-2">Across:</span><p class="">${horizontal}</p></span>`;
-  down.innerHTML = `<span class="fs-4"><span class="fw-bolder fs-2">Down:</span><p class="">${vertical}</p></span>`;
+  across.innerHTML = `<span class="fw-bolder fs-2">Across:</span><p class="fs-4">${horizontal}</p>`;
+  down.innerHTML = `<span class="fw-bolder fs-2">Down:</span><p class="fs-4">${vertical}</p>`;
 
   return parseCoordinates(letters, puzzleNumbers, coords, startingCoords, size, spacing, { minX: minX, maxY: maxY, minY: minY });
 }
@@ -424,15 +423,30 @@ const parseCoordinates = function(coords, labelCoords, wordCoords, startingPoint
     startDirections[elm[0]] = elm[1][1];
   }
 
-  let tmp = {};
+  const tmp = {};
+  const wordStartingPoints = {};
+  const labelWords = {};
   for (const [n,word] of labelCoords) {
+    labelWords[word] = n;
     const pos = wordCoords[word][0].map(n => Math.floor(n / (size + spacing))).join(',');
+    if (pos in wordStartingPoints) wordStartingPoints[pos].push(word);
+    else wordStartingPoints[pos] = [word];
     if (!(pos in tmp)) tmp[pos] = [+n];
     else if (tmp[pos][0] % 2 === 0) tmp[pos].push(+n);
     else tmp[pos].unshift(+n);
   }
 
-  wordCoords = Object.entries(wordCoords).map(elm => elm[1]).map(elm => {
+  wordCoords = Object.entries(wordCoords);
+  const wordAtCoords = {};
+  for (const [word,coords] of wordCoords) {
+    for (const coord of coords) {
+      const pos = coord.map(elm => Math.floor(elm / (size + spacing))).join(',');
+      if (pos in wordAtCoords) wordAtCoords[pos].push(word);
+      else wordAtCoords[pos] = [word];
+    }
+  }
+
+  wordCoords = wordCoords.map(elm => elm[1]).map(elm => {
     return elm.map(n => {
       return n.map(m => Math.floor(m / (size + spacing))).toString();
     });
@@ -440,7 +454,7 @@ const parseCoordinates = function(coords, labelCoords, wordCoords, startingPoint
 
   min.x = Math.floor(bounds.minX / (size + spacing));
   min.y = Math.floor(bounds.minY / (size + spacing));
-  return [positions, tmp, wordCoords];
+  return [positions, tmp, wordCoords, wordStartingPoints, labelWords, wordAtCoords];
 }
 
 generateBtn.addEventListener('click', () => {
@@ -466,7 +480,7 @@ generateBtn.addEventListener('click', () => {
       pairs[arr[0]] = res[0];
       joints[arr[0]] = [res[0][0], res[0][1][Math.floor(Math.random() * res[0][1].length)]];
     }
-    [positions, startingPoints, groups] = generatePuzzle(connectIntersections(joints), definitions);
+    [positions, labelCoords, groups, startingPoints, labelWords, wordAtCoords] = generatePuzzle(connectIntersections(joints), definitions);
   }).catch(error => {
       throw error;
   }).finally(() => {
@@ -484,10 +498,8 @@ generateBtn.addEventListener('click', () => {
     puzzle.style.gridTemplateColumns = `repeat(${xMax-min.x+1}, 40px)`;
     puzzle.style.gridTemplateRows = `repeat(${yMax-min.y+1}, 40px)`;
 
-    console.log(min.x, min.y, xMax, yMax);
-
     const cells = (xMax - min.x + 1) * (yMax - min.y + 1);
-  
+
     for (let i = 0, x = min.x, y = min.y; i < cells; i++) {
       if (x > xMax) {
         x = min.x;
@@ -498,8 +510,8 @@ generateBtn.addEventListener('click', () => {
   
       puzzle.innerHTML += 
       `<div style="position:relative;">
-        ${pos in startingPoints ? `<span id="l-${pos}" class="puzzle-label" style="position:absolute; top:.000001%; left:9.2%; z-index:10;font-size:12px;">${startingPoints[pos][0]}</span>` : ''}
-        ${pos in startingPoints && startingPoints[pos].length === 2 ? `<span id="l2-${pos}" class="puzzle-label" style="position:absolute; top:.000001%; left:65%; z-index:10;font-size:12px;">${startingPoints[pos][1]}</span>` : ''}
+        ${pos in labelCoords ? `<span id="l-${pos}" class="puzzle-label" style="position:absolute; top:.000001%; left:9.2%; z-index:10;font-size:12px;">${labelCoords[pos][0]}</span>` : ''}
+        ${pos in labelCoords && labelCoords[pos].length === 2 ? `<span id="l2-${pos}" class="puzzle-label" style="position:absolute; top:.000001%; left:65%; z-index:10;font-size:12px;">${labelCoords[pos][1]}</span>` : ''}
         <input type="text" class="cell" style="width:100%; height:100%; border:.1vmax solid black; padding:0;${!(pos in letters) ? "background-color:black" : ""}" pattern="[A-Za-z]{1}" minlength="1" maxlength="1" id="${pos}" ${pos in letters ? "" : "disabled"} autocorrect="off" spellcheck="false">
       </div>`;
     }
@@ -508,8 +520,10 @@ generateBtn.addEventListener('click', () => {
 
     gridSpaces = Array.from(document.getElementsByClassName('cell'));
     puzzleLabels = Array.from(document.getElementsByClassName('puzzle-label'));
+    words = Array.from(document.getElementsByClassName('words'));
     gridSpaces.forEach(elm => {
       elm.addEventListener('focusin', () => highlightWord(elm.id));
+      elm.addEventListener('focusin', () => highlightHint(elm.id));
       elm.addEventListener('focusout', () => resetStyling());
       elm.addEventListener('change', () => elm.value = elm.value.toLowerCase());
     });
@@ -527,9 +541,23 @@ const resetStyling = function() {
       elm.style.color = 'black';
     }
   });
+  words.forEach(elm => {
+    elm.classList.remove('highlight');
+  });
   puzzleLabels.forEach(elm => {
     elm.style.color = 'black';
   });
+}
+
+const highlightHint = function(pos) {
+  for (const group of groups) {
+    if (group.includes(pos)) {
+      const words = wordAtCoords[pos];
+      for (const word of words) {
+        document.getElementById(labelWords[word]).classList.add('highlight');
+      }
+    }
+  }
 }
 
 const highlightWord = function(pos) {
@@ -546,9 +574,9 @@ const highlightWord = function(pos) {
   }
   curr.style.backgroundColor = 'rgba(25,85,165,.9)';
   curr.style.color = 'white';
-  if (curr.id in startingPoints) {
+  if (curr.id in labelCoords) {
     document.getElementById(`l-${curr.id}`).style.color = 'white';
-    if (startingPoints[curr.id].length === 2) document.getElementById(`l2-${curr.id}`).style.color = 'white';
+    if (labelCoords[curr.id].length === 2) document.getElementById(`l2-${curr.id}`).style.color = 'white';
   }
 }
 
@@ -631,7 +659,7 @@ const navigatePuzzle = function(key) {
 
 checkBtn.addEventListener('click', () => checkAnswers());
 resetBtn.addEventListener('click', () => resetPuzzle());
-solutionBtn.addEventListener('click', () => revealSolution());  
+solutionBtn.addEventListener('click', () => revealSolution());
 },{"random-words":3}],3:[function(require,module,exports){
 var seedrandom = require('seedrandom');
 

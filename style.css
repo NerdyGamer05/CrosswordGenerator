@@ -53,7 +53,16 @@ input[type="text"] {
   margin: 10px;
 }
 
+#down {
+  margin-right: 10px; 
+}
+
 #hints {
   padding: .1vmax;
   margin-left: 20px;
+}
+
+.highlight {
+  background: #FFC107;
+  color: black;
 }
