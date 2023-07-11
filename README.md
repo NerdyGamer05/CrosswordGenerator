@@ -7,4 +7,4 @@ All you have to do to get started it press the "Generate!" button. After doing s
 Arrow keys can be used to navigate between the different tiles of the puzzle.
 ```
 
-**If you're seeing this, please [try it out](https://crosswordpuzzles.netlify.app/) for yourself!
+**If you're seeing this**, please [try it out](https://crosswordpuzzles.netlify.app/) for yourself!
