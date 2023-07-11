@@ -1,0 +1,59 @@
+.puzzle-container {
+  background: black;
+  display: inline-block;
+  padding: 0;
+}
+
+.puzzle-border {
+  border: 3vmax solid black;
+}
+
+.grid {
+  display: grid;
+  /* grid-template-columns: repeat(15, 80px); */
+  /* grid-template-rows: repeat(15, 80px); */
+  grid-gap: .05vmax;
+}
+
+.cell {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 2.7rem;
+  font-weight: bold;
+  background: white;
+  text-align: center;
+  border: none;
+}
+
+.cell:focus {
+  background-color: rgb(228, 228, 228);
+  border: none;
+  outline: none;
+}
+
+button {
+  margin: 50px;
+}
+
+#generate, #check, #solution, #reset {
+  margin: 0 5px;
+}
+
+.puzzleButtons {
+  margin: 20px;
+}
+
+input[type="text"] {
+  font-size: 24px;
+}
+
+#across, #down {
+  margin: 10px;
+}
+
+#hints {
+  padding: .1vmax;
+  margin-left: 20px;
+}
