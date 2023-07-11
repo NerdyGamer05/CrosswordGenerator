@@ -495,8 +495,6 @@ generateBtn.addEventListener('click', () => {
       }
       const pos = `${x},${y}`;
       x++;
-
-      // puzzle.innerHTML += `<input class="cell" style="width:100%; height:100%; border:.1vmax solid black; padding:0; font-size:18px; minlength="1" maxlength="5" id="${pos}" value=${pos}>`;
   
       puzzle.innerHTML += 
       `<div style="position:relative;">
@@ -604,7 +602,6 @@ const revealSolution = function() {
 
 document.addEventListener('keydown', (event) => navigatePuzzle(event.key));
 
-// keydown (or whatever function)
 const navigatePuzzle = function(key) {
   const direction = key === 'ArrowUp' ? 'up' : key === 'ArrowDown' ? 'down' : key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : null;
   if (direction === null) return;
@@ -628,11 +625,9 @@ const navigatePuzzle = function(key) {
   }
 
   const elm = document.getElementById(`${x},${y}`);
-  // consider changing this so that you search through disabled spaces to find an open space (prob not)
   if (elm === null || elm.disabled) return;
   elm.focus();
 }
-
 
 checkBtn.addEventListener('click', () => checkAnswers());
 resetBtn.addEventListener('click', () => resetPuzzle());
