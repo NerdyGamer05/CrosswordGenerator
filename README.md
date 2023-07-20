@@ -3,6 +3,8 @@ A website for generating crossword puzzles completely from scratch.
 
 ## Get Started
 All you have to do to get started it press the "Generate!" button. After doing so, you can solve the puzzle in your browser, as well as check your answers and view the solution.
-Arrow keys can be used to navigate between the different tiles of the puzzle.
+Arrow keys can be used to navigate between the different tiles of the puzzle. 
+
+P.S. It looks better when you zoom out (no scrolling required to see the hints)
 
 **If you're seeing this**, please [try it out](https://crosswordpuzzles.netlify.app/) for yourself!
