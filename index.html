@@ -10,49 +10,25 @@
     <title>Crossword Puzzle Generator</title>
 </head>
 <body>
-
     <div class="container" style="padding:0;margin:0;width:100%;max-width:100%;">
-        <div class="row">
-            <div class="puzzle-container col" style="background-color:white;width:fit-content;max-width:fit-content;">
-                <div class="grid" id="puzzle" style="background-color:black;width:fit-content;"></div>
-            </div>
-            <div class="col" id="hints" style="display:flex;max-width:50%;">
-                <div id="across"></div>
-                <div id="down"></div>
-            </div>
+      <!-- Puzzle -->
+      <div class="row">
+        <div class="puzzle-container col" style="background-color:white;width:fit-content;max-width:fit-content;">
+          <div class="grid" id="puzzle" style="background-color:black;width:fit-content;"></div>
+          <!-- Buttons -->
+          <div class="btn-group puzzleButtons" role="group">
+            <button type="button" class="btn btn-primary rounded" id="generate" style="display:flex;">Generate!</button>
+            <button type="button" class="btn btn-danger rounded" id="reset" style="display:none;">Reset!</button>
+            <button type="button" class="btn btn-success rounded" id="check" style="display:none;">Check Answers!</button>
+            <button type="button" class="btn btn-primary rounded" id="solution" style="display:none;">Reveal Solution!</button>
         </div>
+        </div>
+        <div class="col" id="hints" style="display:flex;max-width:50%;">
+          <div id="across"></div>
+          <div id="down"></div>
+        </div>
+      </div>
     </div>
-
-    <div class="btn-group puzzleButtons" role="group">
-        <button type="button" class="btn btn-primary rounded" id="generate" style="display:flex;">Generate!</button>
-        <button type="button" class="btn btn-danger rounded" id="reset" style="display:none;">Reset!</button>
-        <button type="button" class="btn btn-success rounded" id="check" style="display:none;">Check Answers!</button>
-        <button type="button" class="btn btn-primary rounded" id="solution" style="display:none;">Reveal Solution!</button>
-    </div>
-
-    <footer class="page-footer fixed-bottom bg-dark text-center text-white">
-        <div class="container p-3 pb-0">
-          <section class="mb">
-            <a class="btn btn-outline-light btn-floating m-1" href="https://github.com/NerdyGamer05/" role="button" target="_blank">
-              <i class="fa-brands fa-github fa-beat fa-xl"></i>
-            </a>
-            <a class="btn btn-outline-light btn-floating m-1" href="https://stackoverflow.com/users/17168449/nerdygamer" role="button" target="_blank">
-              <i class="fa-brands fa-stack-overflow fa-bounce fa-2xl"></i>
-            </a>
-            <a class="btn btn-outline-light btn-floating m-1" href="https://www.chess.com/member/nerdygamer05" role="button" target="_blank">
-              <i class="fa-sharp fa-solid fa-chess fa-flip fa-xl"></i>
-            </a>
-          </section>
-        </div>
-      
-        <div class="text-center p-3" id="lower-footer">
-          <small>Made with
-            <i class="fa-solid fa-code"></i>
-            by Jai Patel © 2023
-          </small>
-        </div>
-      </footer>
-
     <script src="bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>

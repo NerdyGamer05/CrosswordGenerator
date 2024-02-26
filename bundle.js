@@ -35,7 +35,7 @@ const getDefinitions = async function(word) {
       const meanings = data?.[0]?.meanings;
       if (meanings === undefined) return -1;
       return data[0].meanings;
-    })
+  });
   return res;
 }
 
@@ -398,8 +398,8 @@ const generatePuzzle = function(pairs, definitions) {
     else horizontal += `<span id="${n}" class="words"><b>${n}.</b> [<i>${definitions[word].speech}</i>] ${definitions[word].definition}</span><br>`;
   }
 
-  across.innerHTML = `<span class="fw-bolder fs-2">Across:</span><p class="fs-4">${horizontal}</p>`;
-  down.innerHTML = `<span class="fw-bolder fs-2">Down:</span><p class="fs-4">${vertical}</p>`;
+  across.innerHTML = `<span class="fw-bolder fs-2">Across:</span><p class="fs-6">${horizontal}</p>`;
+  down.innerHTML = `<span class="fw-bolder fs-2">Down:</span><p class="fs-6">${vertical}</p>`;
 
   return parseCoordinates(letters, puzzleNumbers, coords, size, spacing, { minX: minX, maxY: maxY, minY: minY });
 }
@@ -485,8 +485,9 @@ generateBtn.addEventListener('click', () => {
       yMax = Math.max(yMax, y);
     }
 
-    puzzle.style.gridTemplateColumns = `repeat(${xMax-min.x+1}, 40px)`;
-    puzzle.style.gridTemplateRows = `repeat(${yMax-min.y+1}, 40px)`;
+    // TODO CHANGE CELL SIZE HERE
+    puzzle.style.gridTemplateColumns = `repeat(${xMax-min.x+1}, 1.75em)`;
+    puzzle.style.gridTemplateRows = `repeat(${yMax-min.y+1}, 1.75em)`;
 
     const cells = (xMax - min.x + 1) * (yMax - min.y + 1);
 
@@ -500,9 +501,9 @@ generateBtn.addEventListener('click', () => {
   
       puzzle.innerHTML += 
       `<div style="position:relative;">
-        ${pos in labelCoords ? `<span id="l-${pos}" class="puzzle-label" style="position:absolute; top:.000001%; left:9.2%; z-index:10;font-size:12px;">${labelCoords[pos][0]}</span>` : ''}
-        ${pos in labelCoords && labelCoords[pos].length === 2 ? `<span id="l2-${pos}" class="puzzle-label" style="position:absolute; top:.000001%; left:65%; z-index:10;font-size:12px;">${labelCoords[pos][1]}</span>` : ''}
-        <input type="text" class="cell" style="width:100%; height:100%; border:.1vmax solid black; padding:0;${!(pos in letters) ? "background-color:black" : ""}" pattern="[A-Za-z]{1}" minlength="1" maxlength="1" id="${pos}" ${pos in letters ? "" : "disabled"} autocorrect="off" spellcheck="false">
+        ${pos in labelCoords ? `<span id="l-${pos}" class="puzzle-label" style="position:absolute; top:.000001%; left:9.2%; z-index:10">${labelCoords[pos][0]}</span>` : ''}
+        ${pos in labelCoords && labelCoords[pos].length === 2 ? `<span id="l2-${pos}" class="puzzle-label" style="position:absolute; top:.000001%; left:65%; z-index:10">${labelCoords[pos][1]}</span>` : ''}
+        <input type="text" class="cell" style="${!(pos in letters) ? "background-color:black" : ""}" pattern="[A-Za-z]{1}" minlength="1" maxlength="1" id="${pos}" ${pos in letters ? "" : "disabled"} autocorrect="off" spellcheck="false">
       </div>`;
     }
     
