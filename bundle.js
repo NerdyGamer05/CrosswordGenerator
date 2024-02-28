@@ -317,7 +317,7 @@ const generatePuzzle = function(pairs, definitions) {
 
     const result = validSurroundings(word, { x: x, y: y }, orientation, list[i-1] in pairs ? pairs[list[i-1]][1].indexOf('_') : -1);
     if (list[i-1] in pairs && word === pairs[list[i-1]][2] && !failed && result) {
-        // pass
+      // Do nothing
     } else if (failed || !result) {
       const result = intersectionCoordinates(word);
       if (!result) randomCoordinates(word);
@@ -496,7 +496,6 @@ generateBtn.addEventListener('click', () => {
       yMax = Math.max(yMax, y);
     }
 
-    // TODO CHANGE CELL SIZE HERE
     puzzle.style.gridTemplateColumns = `repeat(${xMax-min.x+1}, 1.75em)`;
     puzzle.style.gridTemplateRows = `repeat(${yMax-min.y+1}, 1.75em)`;
 
@@ -613,8 +612,6 @@ const checkAnswers = function() {
     }, 5000);
   }
 }
-
-// const playAnimation = 
 
 const resetPuzzle = function() {
   for (const space of gridSpaces) {
