@@ -3,6 +3,8 @@
 },{}],2:[function(require,module,exports){
 const generateWords = require('random-words');
 
+const container = document.querySelector('.container');
+const overlay = document.querySelector('.overlay');
 const puzzle = document.getElementById('puzzle');
 const generateBtn = document.getElementById('generate');
 const checkBtn = document.getElementById('check');
@@ -128,8 +130,8 @@ const generatePuzzle = function(pairs, definitions) {
   const size = 40;
   const spacing = 3;
   const canvas = {
-    width: 1200,
-    height: 1200,
+    width: 750,
+    height: 1000,
   }
   const spaces = Math.ceil((canvas.width) / (size + spacing));
   let [x,y] = [100 + (size + spacing) * Math.floor(spaces / 2),100 + (size + spacing) * Math.floor(spaces / 2)];
@@ -452,7 +454,13 @@ generateBtn.addEventListener('click', () => {
   checkBtn.style.display = 'none';
   solutionBtn.style.display = 'none';
   resetBtn.style.display = 'none';
+  puzzle.style.display = 'none';
+  generateBtn.parentElement.style.width = 'auto';
   puzzle.innerHTML = '';
+  across.innerHTML = '';
+  down.innerHTML = '';
+  userSolution = {};
+  if (solutionMode) revealSolution();
   getPuzzleHints(generateWords(15)).then(res => {
     const definitions = res[0];
     const junctions = Object.entries(res[1]);
@@ -505,6 +513,7 @@ generateBtn.addEventListener('click', () => {
         ${pos in labelCoords && labelCoords[pos].length === 2 ? `<span id="l2-${pos}" class="puzzle-label" style="position:absolute; top:.000001%; left:65%; z-index:10">${labelCoords[pos][1]}</span>` : ''}
         <input type="text" class="cell" style="${!(pos in letters) ? "background-color:black" : ""}" pattern="[A-Za-z]{1}" minlength="1" maxlength="1" id="${pos}" ${pos in letters ? "" : "disabled"} autocorrect="off" spellcheck="false">
       </div>`;
+      puzzle.style.display = 'grid';
     }
     
     if (!puzzle.classList.contains('puzzle-border')) puzzle.classList.add('puzzle-border');
@@ -518,9 +527,10 @@ generateBtn.addEventListener('click', () => {
       elm.addEventListener('focusout', () => resetStyling());
       elm.addEventListener('change', () => elm.value = elm.value.toLowerCase());
     });
-    checkBtn.style.display = 'flex';
-    solutionBtn.style.display = 'flex';
-    resetBtn.style.display = 'flex';
+    checkBtn.parentElement.style.width = `${(xMax-min.x+2.75) * 1.75}em`;
+    checkBtn.style.display = 'inline';
+    solutionBtn.style.display = 'inline';
+    resetBtn.style.display = 'inline';
   });
 });
 
@@ -572,15 +582,36 @@ const highlightWord = function(pos) {
 }
 
 const checkAnswers = function() {
+  if (solutionMode) return;
+  let isWinner = true;
   for (const space of gridSpaces) {
     if (space.disabled) continue;
     space.style.backgroundColor = 'white';
     space.style.color = letters[space.id] === space.value ? 'green' : 'red';
+    if (letters[space.id] !== space.value) isWinner = false;
   }
   for (const space of puzzleLabels) {
     space.style.color = 'black';
   }
+  if (isWinner) {
+    overlay.innerHTML = '<div class="firework"></div>'.repeat(10);
+    container.style.display = 'none';
+    overlay.style.display = 'block';
+    overlay.classList.add('fade-in');
+    setTimeout(() => {
+      overlay.classList.remove('fade-in');
+      overlay.classList.add('fade-out');
+      container.style.display = 'block';
+      overlay.innerHTML = '';
+      setTimeout(() =>{
+        overlay.classList.remove('fade-out');
+        overlay.style.display = 'none';
+      }, 650);
+    }, 5000);
+  }
 }
+
+// const playAnimation = 
 
 const resetPuzzle = function() {
   for (const space of gridSpaces) {
@@ -619,7 +650,10 @@ const revealSolution = function() {
   }
 }
 
-document.addEventListener('keydown', (event) => navigatePuzzle(event.key));
+document.addEventListener('keydown', (event) => {
+  navigatePuzzle(event.key);
+  clearCell(event.key);
+});
 
 const navigatePuzzle = function(key) {
   const direction = key === 'ArrowUp' ? 'up' : key === 'ArrowDown' ? 'down' : key === 'ArrowLeft' ? 'left' : key === 'ArrowRight' ? 'right' : null;
@@ -648,9 +682,20 @@ const navigatePuzzle = function(key) {
   elm.focus();
 }
 
+const clearCell = function(key) {
+  if (key !== 'Delete' && key !== 'Backspace') return;
+  const cell = document.activeElement;
+  if (cell.tagName !== 'INPUT' || !cell.classList.contains('cell')) return;
+  cell.value = '';
+}
+
 checkBtn.addEventListener('click', () => checkAnswers());
 resetBtn.addEventListener('click', () => resetPuzzle());
 solutionBtn.addEventListener('click', () => revealSolution());
+
+document.addEventListener('DOMContentLoaded', () => {
+  overlay.style.display = 'none';
+});
 },{"random-words":3}],3:[function(require,module,exports){
 var seedrandom = require('seedrandom');
 

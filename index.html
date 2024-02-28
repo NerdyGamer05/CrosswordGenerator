@@ -13,22 +13,23 @@
     <div class="container" style="padding:0;margin:0;width:100%;max-width:100%;">
       <!-- Puzzle -->
       <div class="row">
-        <div class="puzzle-container col" style="background-color:white;width:fit-content;max-width:fit-content;">
-          <div class="grid" id="puzzle" style="background-color:black;width:fit-content;"></div>
+        <div class="puzzle-container col">
+          <div class="grid" id="puzzle"></div>
           <!-- Buttons -->
           <div class="btn-group puzzleButtons" role="group">
-            <button type="button" class="btn btn-primary rounded" id="generate" style="display:flex;">Generate!</button>
+            <button type="button" class="btn btn-primary rounded" id="generate" style="display:inline;">Generate Puzzle!</button>
             <button type="button" class="btn btn-danger rounded" id="reset" style="display:none;">Reset!</button>
             <button type="button" class="btn btn-success rounded" id="check" style="display:none;">Check Answers!</button>
             <button type="button" class="btn btn-primary rounded" id="solution" style="display:none;">Reveal Solution!</button>
+          </div>
         </div>
-        </div>
-        <div class="col" id="hints" style="display:flex;max-width:50%;">
+        <div class="col" id="hints">
           <div id="across"></div>
           <div id="down"></div>
         </div>
       </div>
     </div>
+    <div class="overlay"></div>
     <script src="bundle.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
