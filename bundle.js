@@ -67,13 +67,16 @@ async function getPuzzleHints(words) {
     const defs = [];
     if (data === -1) continue;
     for (const obj of data) {
+      let j = 0;
       for (const def of obj.definitions) {
+        if (j === 3) break;
         defs.push({
-          speech: data[0].partOfSpeech,
+          speech: data[i].partOfSpeech,
           definition: def.definition
         });
-        i++;
+        j++;
       }
+      i++;
     }
     const n = Math.floor(Math.random() * defs.length);
     final.push({
