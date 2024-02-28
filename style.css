@@ -84,7 +84,7 @@ input[type="text"] {
 }
 
 #across, #down {
-  margin: 10px;
+  margin-right: 10px;
 }
 
 #down {
