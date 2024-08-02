@@ -23,15 +23,16 @@ body {
   display: grid;
 }
 
-.puzzle-border {
-  border: 1.25em solid black;
+#puzzle.special {
+  zoom: 2;
 }
 
-.grid {
-  display: grid;
-  /* grid-template-columns: repeat(15, 80px); */
-  /* grid-template-rows: repeat(15, 80px); */
-  gap: .05vmax;
+.puzzle-border {
+  border: 1.75em solid black;
+}
+
+.cell-container {
+  position: relative;
 }
 
 .cell {
@@ -40,14 +41,27 @@ body {
   display: flex;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
-  background: white;
+  background: black;
   text-align: center;
-  border: none;
+  border: .01em solid black;
   /* SIZING */
   width: 100%;
   height: 100%;
-  border: .1vmax solid black; ;
   padding: 0;
+}
+
+.cell.active {
+  background: white;
+  text-transform: lowercase;
+}
+
+.cell.active:focus {
+  background-color: rgba(25,85,165,.9);
+  color: white;
+}
+
+.cell.active:focus + span {
+  color: white;
 }
 
 .cell:focus {
@@ -66,6 +80,10 @@ button {
 
 #generate {
   margin-left: 5px;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  cursor: pointer;
 }
 
 .puzzleButtons {
@@ -104,6 +122,11 @@ input[type="text"] {
 
 .puzzle-label {
   font-size: .5em;
+  position: absolute;
+  top: 0.000001%;
+  left: 9.2%;
+  z-index: 10;
+  color: black;
 }
 
 /* OVERLAY */

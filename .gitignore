@@ -1,4 +1,5 @@
 node_modules
 .vscode
+old_index.js
 index.js
 *.txt
